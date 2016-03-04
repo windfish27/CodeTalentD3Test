@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  
+  position: relative;
+}
+/*svg{
+	width: 100%;
+	height: 100%;
+}
+path.slice{
+	stroke-width:2px;
+}*/
+
+polyline{
+	opacity: .3;
+	stroke: black;
+	stroke-width: 1.5px;
+	fill: none;
+}
+
+</style>
+<body>
+<button class="data2">data2</button>
+<button class="data3">data3</button> 
+<button class="data">data</button>
+<button class="data0">data0</button> 
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var data0 = [{
+    'name': 'php',
+    'value': 10,
+    'percent': 20,
+  },{
+    'name': 'js',
+    'value': 40,
+    'percent': 80,
+  }];
+
+var data = [{
+    'name': 'php',
+    'value': 10,
+    'percent': 8,
+  },{
+    'name': 'js',
+    'value': 40,
+    'percent': 33,
+  },{
+    'name': 'asp.net',
+    'value': 70,
+    'percent': 59,
+}];
+
+var data2 = [{
+    'name': 'php',
+    'value': 10,
+    'percent': 6,
+  },{
+    'name': 'js',
+    'value': 40,
+    'percent': 24,
+  },{
+    'name': 'asp.net',
+    'value': 40,
+    'percent': 41,
+},{
+    'name': 'python',
+    'value': 50,
+    'percent': 29,
+}];
+
+var data3 = [{
+    'name': 'php',
+    'value': 10,
+    'percent': 7,
+  },{
+    'name': 'js',
+    'value': 40,
+    'percent': 27,
+  },{
+    'name': 'asp.net',
+    'value': 40,
+    'percent': 46,
+},{
+    'name': 'python',
+    'value': 30,
+    'percent': 20,
+}];
+
+
+var width = 400,
+    height = 400,
+	radius = Math.min(width, height) / 4;
+
+var svg = d3.select("body")
+	.append("svg")
+	.attr("width", width)
+    .attr("height", height)
+	.append("g");
+
+svg.append("g")
+	.attr("class", "slices");
+svg.append("g")
+	.attr("class", "labels");
+svg.append("g")
+	.attr("class", "lines");
+
+var pie = d3.layout.pie()
+	.sort(null)
+	.value(function(d) {
+		return d.percent;
+	});
+
+var arc = d3.svg.arc()
+	.outerRadius(radius * 0.75)
+	.innerRadius(radius * 0.67);
+
+var outerArc = d3.svg.arc()
+	.innerRadius(radius * 0.9)
+	.outerRadius(radius * 0.9);
+
+svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var key = function(d){ return d.data.name; };
+
+var color = d3.scale.category10();
+
+	/*["#6ae2de", "#fbb03b", "#00a99d"]*/
+
+/*var color = d3.scale.category20()
+	.domain(["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"]);
+
+function randomData (){
+	var labels = color.domain();
+	return labels.map(function(label){
+		return { name: label, percent: Math.random() }
+	}).filter(function() {
+		return Math.random() > .5;
+	}).sort(function(a,b) {
+		return d3.ascending(a.name, b.name);
+	});
+}
+change(randomData(),0);
+d3.select(".randomize")
+	.on("click", function(){
+		change(randomData(),700);
+	});*/
+
+
+change(data,0);
+
+d3.select(".data0")
+	.on("click", function(){
+		change(data0,5000);
+	});
+d3.select(".data2")
+	.on("click", function(){
+		change(data2,700);
+	});
+d3.select(".data")
+	.on("click", function(){
+		change(data,5000);
+	});
+d3.select(".data3")
+	.on("click", function(){
+		change(data3,700);
+	});
+
+function mergeWithFirstEqualZero(first, second){
+	var secondSet = d3.set(); 
+
+	second.forEach(function(d) { secondSet.add(d.name); });
+
+	var onlyFirst = first
+		.filter(function(d){ return !secondSet.has(d.name) })
+		.map(function(d) { return {name: d.name, percent: 0}; });
+
+	return d3.merge([ second, onlyFirst ])
+		.sort(function(a,b) {
+			return d3.ascending(a.name, b.name);
+		});
+}
+
+function change(data,duration) {
+	var data0 = svg.select(".slices").selectAll("path.slice")
+		.data().map(function(d) { return d.data });
+	if (data0.length == 0) data0 = data;
+	var was = mergeWithFirstEqualZero(data, data0);
+	var is = mergeWithFirstEqualZero(data0, data);
+
+	/* ------- SLICE ARCS -------*/
+
+	var slice = svg.select(".slices").selectAll("path.slice")
+		.data(pie(was), key);
+
+	slice.enter()
+		.insert("path")
+		.attr("class", "slice")
+		.style("fill", function(d) { return color(d.data.name); })
+		.each(function(d) {
+			this._current = d;
+		});
+
+	slice = svg.select(".slices").selectAll("path.slice")
+		.data(pie(is), key);
+
+	slice		
+		.transition().duration(duration)
+		.attrTween("d", function(d) {
+			var interpolate = d3.interpolate(this._current, d);
+			var _this = this;
+			return function(t) {
+				_this._current = interpolate(t);
+				return arc(_this._current);
+			};
+		});
+
+	slice = svg.select(".slices").selectAll("path.slice")
+		.data(pie(data), key);
+
+	slice.exit().transition().delay(duration).duration(0).remove();
+
+	/* ------- TEXT LABELS -------*/
+
+	var text = svg.select(".labels").selectAll("text")
+		.data(pie(was), key);
+
+
+	text.enter()
+		.append("text")
+		.attr("dy", ".35em")
+		.style("opacity", 0)
+		.each(function(d) {
+			this._current = d;
+		});
+
+	function midAngle(d){
+		return d.startAngle + (d.endAngle - d.startAngle)/2;
+	}
+
+	text = svg.select(".labels").selectAll("text")
+		.data(pie(is), key);
+
+
+
+	text.transition().duration(duration)
+		.style("opacity", function(d) {
+			return d.data.percent == 0 ? 0 : 1;
+		})
+		.attrTween("transform", function(d) {
+			var interpolate = d3.interpolate(this._current, d);
+			var _this = this;
+			return function(t) {
+				var d2 = interpolate(t);
+				_this._current = d2;
+				var pos = outerArc.centroid(d2);
+				pos[0] = 1.4 * radius * (midAngle(d2) < Math.PI ? 1 : -1);
+				return "translate("+ pos +")";
+			};
+		})
+		.styleTween("text-anchor", function(d){
+			var interpolate = d3.interpolate(this._current, d);
+			return function(t) {
+				var d2 = interpolate(t);
+				return midAngle(d2) < Math.PI ? "end":"start";
+			};
+		});
+	
+	text = svg.select(".labels").selectAll("text")
+		.data(pie(data), key);
+
+
+	text.exit().transition().delay(duration).remove();
+
+	text.selectAll("tspan").remove();
+
+	text.append("tspan")
+		.text(function (d) {
+    		return d.data.name;
+    	})
+    	.style("fill", function(d) { return color(d.data.name); })
+    	.style("font-size","18px")
+    	.attr({x:0,y:-12});
+	
+	text.append("tspan")
+		.text(function (d) {
+    		return d.data.percent + "%";
+    	})
+    	.style("fill", function(d) { return color(d.data.name); })
+    	.style("font-size","18px")
+    	.attr({x:0,y:16});
+
+
+	/* ------- SLICE TO TEXT POLYLINES -------*/
+
+	var polyline = svg.select(".lines").selectAll("polyline")
+		.data(pie(was), key);
+	
+	polyline.enter()
+		.append("polyline")
+		.style("opacity", 0)
+		.each(function(d) {
+			this._current = d;
+		});
+
+	polyline = svg.select(".lines").selectAll("polyline")
+		.data(pie(is), key);
+	
+	polyline.transition().duration(duration)
+		.style("opacity", function(d) {
+			return d.data.percent == 0 ? 0 : .5;
+		})
+		.style("stroke", function(d) { return color(d.data.name); })
+		.attrTween("points", function(d){
+			this._current = this._current;
+			var interpolate = d3.interpolate(this._current, d);
+			var _this = this;
+			return function(t) {
+				var d2 = interpolate(t);
+				_this._current = d2;
+				var pos = outerArc.centroid(d2);
+				pos[0] = radius * 1.4 * (midAngle(d2) < Math.PI ? 1 : -1);
+				return [arc.centroid(d2), outerArc.centroid(d2), pos];
+			};			
+		});
+	
+	polyline = svg.select(".lines").selectAll("polyline")
+		.data(pie(data), key);
+	
+	polyline.exit().transition().delay(duration).remove();
+};
+
+</script>
+</body>
