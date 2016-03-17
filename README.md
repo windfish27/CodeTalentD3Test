@@ -15,33 +15,33 @@ Test donut chart animation.
   - Combine coxcomb and pie chart, click show inside property.
 
 ```js
-  var data = [{
+var data = [{
     'name': 'php',
     'value': 10,
     'percent': 8,
     'tags':[{
-      'name':'web',
-      'value':20,
-      'percent': 40
+		'name':'web',
+		'value':20,
+		'percent': 40
     },{
-      'name':'app',
-      'value':30,
-      'percent': 60
+		'name':'app',
+		'value':30,
+		'percent': 60
     }]
-  },{
+},{
     'name': 'js',
     'value': 40,
     'percent': 33,
     'tags':[{
-      'name':'rac.js',
-      'value':60,
-      'percent': 60
+		'name':'rac.js',
+		'value':60,
+		'percent': 60
     },{
-      'name':'nodeJs',
-      'value':40,
-      'percent': 40
+		'name':'nodeJs',
+		'value':40,
+		'percent': 40
     }]
-  },{
+},{
     'name': 'asp.net',
     'value': 70,
     'percent': 59,
