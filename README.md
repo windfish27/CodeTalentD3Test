@@ -10,7 +10,6 @@ Find out blank animation bug on data0.
  * [animate1_bug](http://windfish27.github.io/CodeTalentD3Test/animate1_bug.html)
 
 Bug demo.
-
 A Bigger percetage add or disppear cause it.
 
  * [animate2](http://windfish27.github.io/CodeTalentD3Test/animate2.html)
