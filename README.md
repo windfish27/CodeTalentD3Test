@@ -13,6 +13,7 @@ Test donut chart animation.
   - Same value without blank animation.
 * [coxcomb](http://windfish27.github.io/CodeTalentD3Test/coxcomb.html)
   - Combine coxcomb and pie chart, click show inside property.
+  - Layer data from [Codetalent](https://github.com/windfish27/CodeTalent) skill section.
 
 ```js
 var data = [{
