@@ -14,7 +14,7 @@ Test donut chart animation.
 * [coxcomb](http://windfish27.github.io/CodeTalentD3Test/coxcomb.html)
   - Combine coxcomb and pie chart, click show inside property.
 
-```markdown
+```js
   var data = [{
     'name': 'php',
     'value': 10,
