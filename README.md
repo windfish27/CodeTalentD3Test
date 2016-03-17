@@ -1,7 +1,7 @@
 D3 Test
 ===========
 
-Test donut chart animation.
+Test donut chart animation & coxcomb pie chart.
 
 * [animate1](http://windfish27.github.io/CodeTalentD3Test/animate1.html)
   - Find out blank animation bug on data0.
@@ -14,6 +14,7 @@ Test donut chart animation.
 * [coxcomb](http://windfish27.github.io/CodeTalentD3Test/coxcomb.html)
   - Combine coxcomb and pie chart, click show inside property.
   - Layer data from [Codetalent](https://github.com/windfish27/CodeTalent) skill section.
+  - But it's hard to recognize the meaning, the proposal was declined.
 
 ```js
 var data = [{
