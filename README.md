@@ -4,7 +4,7 @@ D3 Test
 Test donut chart animation.
 
  * [animate1](http://windfish27.github.io/CodeTalentD3Test/animate1.html)
- - Find out blank animation bug on data0.
+  Find out blank animation bug on data0.
 
  * [animate1_bug](http://windfish27.github.io/CodeTalentD3Test/animate1_bug.html)
  - Bug demo.
